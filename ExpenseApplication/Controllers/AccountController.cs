@@ -59,13 +59,13 @@ namespace ExpenseApplication.Controllers
 
             switch (user.RoleId)
             {
-                case 1: // Çalışan
+                case (int)UserRole.Employee:
                     return RedirectToAction("Index", "Home");
-                case 2: // Yönetici
+                case (int)UserRole.Manager: 
                     return RedirectToAction("Privacy", "Home");
-                case 3: // Muhasebeci
+                case (int)UserRole.Accountant: 
                     return RedirectToAction("Accountant", "Home");
-                case 4: // Admin
+                case (int)UserRole.Admin: 
                     return RedirectToAction("Admin", "Home");
                 default:
                     return RedirectToAction("Index", "Home");

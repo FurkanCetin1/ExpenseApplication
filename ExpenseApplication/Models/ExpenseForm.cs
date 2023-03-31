@@ -7,6 +7,8 @@ public partial class ExpenseForm
 {
     public int ExpenseFormId { get; set; }
 
+    public string Description { get; set; }
+
     public int UserId { get; set; }
 
     public decimal TotalAmount { get; set; }
