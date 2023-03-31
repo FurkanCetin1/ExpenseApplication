@@ -1,0 +1,105 @@
+﻿@using Azure.Core;
+@model IEnumerable<ExpenseApplication.Models.ExpenseForm>
+
+@{
+    ViewData["Title"] = "Onay Bekleyen Masraflar";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@using (Html.BeginForm("Privacy", "Home", FormMethod.Get, new { @class = "d-flex" }))
+{
+    <div class="d-flex align-items-end">
+        <div class="form-group mr-4">
+            <label for="startDate">Başlangıç Tarihi</label>
+            <input type="date" class="form-control" id="startDate" name="startDate" value="@Context.Request.Query["startDate"]">
+        </div>
+        <div class="form-group mr-4">
+            <label for="endDate">Bitiş Tarihi</label>
+            <input type="date" class="form-control" id="endDate" name="endDate" style="margin-left:10px" value="@Context.Request.Query["endDate"]">
+        </div>
+        <div class="form-group mr-4">
+            <label for="username">Kullanıcı Adı</label>
+            <input type="text" class="form-control" id="username" name="username" style="margin-left:20px" value="@Context.Request.Query["username"]">
+        </div>
+        <div class="form-group">
+            <label class="d-none d-md-block">&nbsp;</label>
+            <button type="submit" style="margin-left:30px" class="btn btn-primary form-control">Filtrele</button>
+        </div>
+    </div>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Form ID</th>
+            <th>User</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var form in Model)
+        {
+            <tr>
+                <td>@form.ExpenseFormId</td>
+                <td>@form.User.Username</td>
+                <td>@form.CreatedDate.Value.ToString("yyyy-MM-dd")</td>
+                <td>@form.StatusId</td>
+                <td>
+                    <form method="post" asp-action="ApproveExpenseForm" asp-controller="Home">
+                        <input type="hidden" name="expenseFormId" value="@form.ExpenseFormId" />
+                        <button type="submit" class="btn btn-primary">Onayla</button>
+                    </form>
+                    <form method="post" asp-action="RejectExpenseForm" asp-controller="Home">
+                        <input type="hidden" name="expenseFormId" value="@form.ExpenseFormId" />
+                        <button type="submit" class="btn btn-danger">Reddet</button>
+                    </form>
+                    <form method="post" asp-action="RequestEdit" asp-controller="Home" onsubmit="showSuccessMessage()">
+                        <input type="hidden" name="expenseFormId" value="@form.ExpenseFormId" />
+                        <textarea name="reviewComment" placeholder="Yorumunuzu buraya yazın"></textarea>
+                        <button type="submit" class="btn btn-warning" disabled>Düzenleme Talebi Gönder</button>
+                    </form>
+                </td>
+            </tr>
+            foreach (var expense in form.Expenses)
+            {
+                <tr>
+                    <td></td>
+                    <td colspan="4">
+                        @expense.ExpenseDate.ToString("yyyy-MM-dd") - @expense.Description - @expense.Amount
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+@section Scripts {
+    <script>
+        function checkTextarea() {
+            const textareas = document.querySelectorAll('textarea[name="reviewComment"]');
+            textareas.forEach(textarea => {
+                textarea.addEventListener('input', function () {
+                    const submitButton = this.parentElement.querySelector('button[type="submit"]');
+                    submitButton.disabled = !this.value.trim();
+                });
+            });
+        }
+
+        function showSuccessMessage() {
+            const successMessage = document.createElement('div');
+            successMessage.innerText = "Başarıyla gönderildi";
+            successMessage.classList.add('alert', 'alert-success');
+            const container = document.querySelector('.container');
+            container.prepend(successMessage);
+            setTimeout(() => {
+                successMessage.remove();
+            }, 3000);
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            checkTextarea();
+        });
+    </script>
+}

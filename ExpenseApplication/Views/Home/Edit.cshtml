@@ -1,0 +1,109 @@
+﻿@model ExpenseForm
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<form method="post" asp-action="SaveChanges" asp-controller="Home">
+    <div class="form-group">
+        <label for="Currency">Para Birimi</label>
+        <select asp-for="Currency" class="form-control" id="Currency" required>
+            <option value="TL">TL</option>
+            <option value="EUR">EUR</option>
+            <option value="USD">USD</option>
+        </select>
+    </div>
+    <input type="hidden" asp-for="ExpenseFormId" />
+
+    @for (int i = 0; i < Model.Expenses.Count(); i++)
+    {
+        <div class="expense-item">
+            <input type="hidden" name="Expenses[@i].ExpenseId" value="@Model.Expenses.ElementAt(i).ExpenseId" />
+
+            <div class="form-group">
+                <label for="Expenses_@(i)__ExpenseDate">Masraf Tarihi</label>
+                <input type="date" class="form-control" name="Expenses[@i].ExpenseDate" value="@Model.Expenses.ElementAt(i).ExpenseDate.ToShortDateString()" required />
+            </div>
+
+            <div class="form-group">
+                <label for="Expenses_@(i)__Description">Masraf Amaç</label>
+                <input type="text" class="form-control" name="Expenses[@i].Description" value="@Model.Expenses.ElementAt(i).Description" required />
+            </div>
+
+            <div class="form-group">
+                <label for="Expenses_@(i)__Amount">Masraf Tutarı</label>
+                <input type="number" step="0.01" class="form-control" name="Expenses[@i].Amount" value="@Model.Expenses.ElementAt(i).Amount" required />
+            </div>
+
+            <button type="button" class="btn btn-danger" onclick="removeExpenseItem(this);">Sil</button>
+            <hr />
+        </div>
+    }
+
+
+
+    <button type="button" class="btn btn-secondary mb-3" onclick="addExpenseItem();">Masraf Ekle</button>
+    <button type="submit" class="btn btn-primary">Kaydet</button>
+</form>
+
+@section Scripts {
+    <script>
+        let expenseItems = document.getElementsByClassName("expense-item");
+
+        function addExpenseItem() {
+            let newItem = document.createElement("div");
+            newItem.classList.add("expense-item");
+
+            newItem.innerHTML = `
+                <input type="hidden" name="Expenses[0].ExpenseId" value="0" />
+
+                <div class="form-group">
+                    <label for="Expenses_0__ExpenseDate">Masraf Tarihi</label>
+                    <input type="date" class="form-control" name="Expenses[0].ExpenseDate" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="Expenses_0__Description">Masraf Amaç</label>
+                    <input type="text" class="form-control" name="Expenses[0].Description" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="Expenses_0__Amount">Masraf Tutarı</label>
+                    <input type="number" step="0.01" class="form-control" name="Expenses[0].Amount" required />
+                </div>
+
+                <button type="button" class="btn btn-danger" onclick="removeExpenseItem(this);">Sil</button>
+                <hr />
+            `;
+
+            document.querySelector("form").insertBefore(newItem, document.querySelector("form > .btn"));
+            updateInputNames();
+        }
+
+        function removeExpenseItem(button) {
+            let item = button.parentElement;
+            item.parentElement.removeChild(item);
+            updateInputNames();
+        }
+
+        function updateInputNames() {
+            for (let i = 0; i < expenseItems.length; i++) {
+                let inputs = expenseItems[i].querySelectorAll("input, select");
+            for (let input of inputs) {
+                let originalName = input.getAttribute("name");
+                let newName = originalName.replace(/\d+/, i);
+                input.setAttribute("name", newName);
+                input.setAttribute("id", newName.replace('[', '').replace(']', ''));
+            }
+                let labels = expenseItems[i].querySelectorAll("label");
+                for (let label of labels) {
+                    let originalFor = label.getAttribute("for");
+                    let newFor = originalFor.replace(/\d+/, i);
+                    label.setAttribute("for", newFor);
+                }
+            }
+        }
+    </script>
+}

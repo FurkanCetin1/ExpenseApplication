@@ -1,0 +1,93 @@
+﻿@model IEnumerable<ExpenseApplication.Models.ExpenseForm>
+
+@{
+    ViewData["Title"] = "Ödenmeyi Bekleyen Masraflar";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@using (Html.BeginForm("Accountant", "Home", FormMethod.Get))
+{
+    <div class="d-flex align-items-end">
+        <div class="form-group mr-4">
+            <label for="startDate">Başlangıç Tarihi</label>
+            <input type="date" class="form-control" id="startDate" name="startDate" value="@Context.Request.Query["startDate"]">
+        </div>
+        <div class="form-group mr-4">
+            <label for="endDate">Bitiş Tarihi</label>
+            <input type="date" class="form-control" id="endDate" name="endDate" style="margin-left:10px" value="@Context.Request.Query["endDate"]">
+        </div>
+        <div class="form-group mr-4">
+            <label for="username">Kullanıcı Adı</label>
+            <input type="text" class="form-control" id="username" name="username" style="margin-left:20px" value="@Context.Request.Query["username"]">
+        </div>
+        <div class="form-group">
+            <label class="d-none d-md-block">&nbsp;</label>
+            <button type="submit" style="margin-left:30px" class="btn btn-primary form-control">Filtrele</button>
+        </div>
+    </div>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Form ID</th>
+            <th>User</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var form in Model)
+        {
+            <tr>
+                <td>@form.ExpenseFormId</td>
+                <td>@(form.User != null ? form.User.Username : "N/A")</td>
+                <td>@form.CreatedDate.Value.ToString("yyyy-MM-dd")</td>
+                <td>@form.StatusId</td>
+                <td>
+                    <button class="btn btn-success pay-button" data-formid="@form.ExpenseFormId">Öde</button>
+                </td>
+            </tr>
+            foreach (var expense in form.Expenses)
+            {
+                <tr>
+                    <td></td>
+                    <td colspan="4">
+                        @expense.ExpenseDate.ToString("yyyy-MM-dd") - @expense.Description - @expense.Amount
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<div id="paymentMessage" class="alert alert-success" style="display:none;">
+    Başarıyla Ödenmiştir!
+</div>
+
+@section Scripts {
+    <script>
+        $(function () {
+            $('.pay-button').click(function () {
+                var formId = $(this).data('formid');
+                var button = $(this);
+
+                $.ajax({
+                    method: 'POST',
+                    url: '/Home/PayExpenseForm',
+                    data: { id: formId },
+                    success: function () {
+                        button.prop('disabled', true);
+                        button.text('Ödendi');
+                        $('#paymentMessage').fadeIn().delay(3000).fadeOut();
+                    },
+                    error: function () {
+                        alert('Ödeme işlemi başarısız oldu.');
+                    }
+                });
+            });
+        });
+    </script>
+}

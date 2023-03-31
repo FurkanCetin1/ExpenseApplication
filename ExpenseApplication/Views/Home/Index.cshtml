@@ -1,0 +1,138 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+
+@if (ViewData["FormSubmitted"] != null && (bool)ViewData["FormSubmitted"])
+{
+    <div class="alert alert-success" role="alert">
+        Masraf başarıyla onaya gönderildi!
+    </div>
+}
+
+<div class="container">
+    <form id="expenseForm" asp-action="SubmitForm" asp-controller="Home" method="post">
+        <div class="form-group">
+            <label for="currency">Para Birimi</label>
+            <select class="form-control" id="currency" name="Currency" required>
+                <option value="TL">TL</option>
+                <option value="EUR">EUR</option>
+                <option value="USD">USD</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="expenseDate">Masraf Tarihi</label>
+            <input type="date" class="form-control" id="expenseDate" required>
+        </div>
+
+        <div class="form-group">
+            <label for="expensePurpose">Masraf Amaç</label>
+            <textarea class="form-control" id="expensePurpose" rows="5" required></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="expenseAmount">Masraf Tutarı</label>
+            <input type="number" step="0.01" class="form-control" id="expenseAmount" required>
+        </div>
+
+        <button type="button" class="btn btn-secondary mb-3" style="margin-top:10px" onclick="addExpenseItem();">Masraf Ekle</button>
+
+        <table class="table" id="expenseTable">
+            <thead>
+                <tr>
+                    <th>Masraf Tarihi</th>
+                    <th>Masraf Amaç</th>
+                    <th>Masraf Tutarı</th>
+                </tr>
+            </thead>
+            <tbody id="expenseTableBody">
+            </tbody>
+        </table>
+        <div class="form-group">
+            <label for="totalExpense">Toplam Masraf</label>
+            <input type="number" step="0.01" class="form-control" id="totalExpense" name="TotalAmount" readonly>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="margin-top:10px" onclick="prepareFormForSubmission();" id="submitBtn" disabled>Gönder</button>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        let expenseItems = [];
+
+        function addExpenseItem() {
+            const maxAmount = 5000;
+
+            let expenseDate = document.getElementById("expenseDate").value;
+            let expensePurpose = document.getElementById("expensePurpose").value;
+            let expenseAmount = document.getElementById("expenseAmount").value;
+
+            if (parseFloat(expenseAmount) > maxAmount) {
+                alert(`Masraf tutarı ${maxAmount} TL/EUR/USD/PKR/INR/... değerini geçemez.`);
+                return;
+            }
+
+            console.log("Adding expense item:", expenseDate, expensePurpose, expenseAmount);
+
+            expenseItems.push({
+                ExpenseDate: expenseDate,
+                Description: expensePurpose,
+                Amount: expenseAmount
+            });
+
+            document.getElementById("submitBtn").disabled = false;
+            console.log("Current expense items:", expenseItems);
+
+            let tableBody = document.getElementById("expenseTableBody");
+            let newRow = tableBody.insertRow();
+
+            newRow.insertCell(0).innerText = expenseDate;
+            newRow.insertCell(1).innerText = expensePurpose;
+            newRow.insertCell(2).innerText = expenseAmount;
+
+            updateTotalExpense();
+        }
+
+        function prepareFormForSubmission() {
+            if (expenseItems.length === 0) {
+                return;
+            }
+            let expenseForm = document.getElementById("expenseForm");
+            for (let i = 0; i < expenseItems.length; i++) {
+                let expenseDate = document.createElement("input");
+                expenseDate.type = "hidden";
+                expenseDate.name = `Expenses[${i}].ExpenseDate`;
+                expenseDate.value = expenseItems[i].ExpenseDate;
+                expenseForm.appendChild(expenseDate);
+
+                let description = document.createElement("input");
+                description.type = "hidden";
+                description.name = `Expenses[${i}].Description`;
+                description.value = expenseItems[i].Description;
+                expenseForm.appendChild(description);
+
+                let amount = document.createElement("input");
+                amount.type = "hidden";
+                amount.name = `Expenses[${i}].Amount`;
+                amount.value = expenseItems[i].Amount;
+                expenseForm.appendChild(amount);
+            }
+            expenseForm.submit(); 
+
+        }
+
+
+        function updateTotalExpense() {
+            let total = 0;
+
+            for (let i = 0; i < expenseItems.length; i++) {
+                let amount = parseFloat(expenseItems[i].Amount);
+                if (!isNaN(amount)) {
+                    total += amount;
+                }
+            }
+
+            document.getElementById("totalExpense").value = total;
+        }
+    </script>
+    }

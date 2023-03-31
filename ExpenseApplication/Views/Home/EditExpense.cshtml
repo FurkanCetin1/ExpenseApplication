@@ -1,0 +1,29 @@
+﻿@model ExpenseApplication.Models.Expense
+
+@{
+    ViewData["Title"] = "Edit Expense";
+}
+
+<h1>Edit Expense</h1>
+
+<form asp-action="EditExpense" asp-controller="Home" method="post">
+    <input type="hidden" asp-for="ExpenseId" />
+    <input type="hidden" asp-for="ExpenseFormId" />
+
+    <div class="form-group">
+        <label asp-for="ExpenseDate">Masraf Tarihi</label>
+        <input asp-for="ExpenseDate" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Description">Masraf Amaç</label>
+        <input asp-for="Description" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Amount">Masraf Tutarı</label>
+        <input asp-for="Amount" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Kaydet</button>
+</form>

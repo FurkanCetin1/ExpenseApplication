@@ -1,0 +1,23 @@
+﻿@model IEnumerable<MonthlyExpenseSummaryViewModel>
+
+<h1>Aylık Masraf Özeti</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Ay</th>
+            <th>Yıl</th>
+            <th>Toplam Masraf</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Month</td>
+                <td>@item.Year</td>
+                <td>@item.TotalExpense</td>
+            </tr>
+        }
+    </tbody>
+</table>

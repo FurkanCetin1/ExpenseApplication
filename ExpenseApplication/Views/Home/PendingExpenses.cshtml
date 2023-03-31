@@ -1,0 +1,31 @@
+﻿@model IEnumerable<ExpenseForm>
+
+@{
+    ViewData["Title"] = "Düzenlenmeyi Bekleyen Masraflar";
+}
+
+<h1>Düzenlenmeyi Bekleyen Masraflar</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Yönetici Yorumu</th>
+            <th>Toplam Masraf</th>
+            <th>Düzenle</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var expenseForm in Model)
+        {
+            <tr>
+                <td>@expenseForm.ExpenseFormId</td>
+                <td>@expenseForm.ReviewComment</td>
+                <td>@expenseForm.TotalAmount</td>
+                <td>
+                    <a asp-action="Edit" asp-controller="Home" asp-route-id="@expenseForm.ExpenseFormId" class="btn btn-primary">Düzenle</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

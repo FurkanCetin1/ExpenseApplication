@@ -1,0 +1,77 @@
+﻿@model IEnumerable<ExpenseApplication.Models.ExpenseForm>
+
+@{
+    ViewData["Title"] = "Onay Bekleyen Masraflar";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@using (Html.BeginForm("PendingForms", "Home", FormMethod.Get))
+{
+    <div class="form-row">
+        <div class="form-group col-md-3">
+            <label for="currency">Para Birimi</label>
+            <select class="form-control" id="currency" name="currency">
+                <option value="">Tümü</option>
+                <option value="TL">TL</option>
+                <option value="USD">USD</option>
+                <option value="EUR">EUR</option>
+            </select>
+        </div>
+        <div class="form-group col-md-3">
+            <label>&nbsp;</label>
+            <button type="submit" class="btn btn-primary form-control">Filtrele</button>
+        </div>
+    </div>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Form ID</th>
+            <th>User ID</th>
+            <th>Para Birimi</th>
+            <th>Toplam Tutar</th>
+            <th>Masraflar</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var form in Model)
+        {
+            <tr>
+                <td>@form.ExpenseFormId</td>
+                <td>@form.UserId</td>
+                <td>@form.Currency</td>
+                <td>@form.TotalAmount</td>
+                <td>
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Masraf ID</th>
+                                <th>Tarih</th>
+                                <th>Amaç</th>
+                                <th>Tutar</th>
+                                <th>Aksiyonlar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var expense in form.Expenses)
+                            {
+                                <tr>
+                                    <td>@expense.ExpenseId</td>
+                                    <td>@expense.ExpenseDate.ToShortDateString()</td>
+                                    <td>@expense.Description</td>
+                                    <td>@expense.Amount</td>
+                                    <td>
+                                        
+                                        <a asp-action="EditExpense" asp-controller="Home" asp-route-id="@expense.ExpenseId" class="btn btn-primary btn-sm">Düzenle</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
