@@ -4,9 +4,14 @@
     ViewData["Title"] = "User Expense Summary";
 }
 
-<h1>User Expense Summary</h1>
+<h1 style="text-align:center">Çalışan Masraf Özeti</h1>
+<div style="display: flex; justify-content: center; align-items: center;">
+    <div style="width: 800px; height: 800px;">
+        <canvas id="userExpenseChart"></canvas>
+    </div>
+</div>
 
-<table class="table">
+@*<table class="table" style="margin-top:50px;">
     <thead>
         <tr>
             <th>User ID</th>
@@ -26,4 +31,58 @@
             </tr>
         }
     </tbody>
-</table>
+</table>*@
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Razor ile JSON'a dönüştürülüp JavaScript'e aktarılıyor
+        const modelData = @Html.Raw(Json.Serialize(Model));
+
+        // Chart oluşturma
+        const userExpenseChart = new Chart(document.getElementById('userExpenseChart'), {
+            type: 'pie',
+            data: {
+                labels: modelData.map(item => item.fullName),
+                datasets: [
+                    {
+                        label: 'Total Expense',
+                        data: modelData.map(item => item.totalExpense),
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)',
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)',
+                        ],
+                        borderWidth: 1,
+                    },
+                ],
+            },
+            options: {
+                layout: {
+                    padding: {
+                        bottom(ctx) {
+                            const chart = ctx.chart;
+                            let pb = 0;
+                            chart.data.datasets.forEach(function (el) {
+                                const hOffset = el.hoverOffset || 0;
+                                pb = Math.max(hOffset / 2 + 5, pb)
+                            });
+                            return pb;
+                        }
+                    }
+                },
+            }
+        });
+    </script>
+}

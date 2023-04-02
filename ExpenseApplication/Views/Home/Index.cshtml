@@ -20,6 +20,14 @@
             </select>
         </div>
         <div class="form-group">
+            <label for="currency">Masraf Açıklama</label>
+            <select class="form-control" id="currency" name="Currency" required>
+                <option value="TL">TL</option>
+                <option value="EUR">EUR</option>
+                <option value="USD">USD</option>
+            </select>
+        </div>
+        <div class="form-group">
             <label for="expenseDate">Masraf Tarihi</label>
             <input type="date" class="form-control" id="expenseDate" required>
         </div>
@@ -58,6 +66,7 @@
 
 @section Scripts {
     <script>
+
         let expenseItems = [];
 
         function addExpenseItem() {
@@ -66,6 +75,11 @@
             let expenseDate = document.getElementById("expenseDate").value;
             let expensePurpose = document.getElementById("expensePurpose").value;
             let expenseAmount = document.getElementById("expenseAmount").value;
+
+            if (!expenseDate || !expensePurpose || !expenseAmount) {
+                alert("Lütfen tüm alanları doldurun.");
+                return;
+            }
 
             if (parseFloat(expenseAmount) > maxAmount) {
                 alert(`Masraf tutarı ${maxAmount} TL/EUR/USD/PKR/INR/... değerini geçemez.`);
