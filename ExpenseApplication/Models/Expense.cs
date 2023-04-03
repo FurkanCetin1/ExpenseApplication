@@ -9,7 +9,7 @@ public partial class Expense
 
     public DateTime ExpenseDate { get; set; }
 
-    public string Description { get; set; } = null!;
+    public string? Description { get; set; } = null!;
 
     public decimal Amount { get; set; }
 

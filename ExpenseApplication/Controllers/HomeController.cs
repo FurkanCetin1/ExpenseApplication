@@ -62,7 +62,7 @@ namespace ExpenseApplication.Controllers
         }
 
         [HttpPost]
-        public IActionResult SubmitForm(ExpenseForm expenseForm, List<Expense> Expenses)
+        public IActionResult SubmitForm(ExpenseForm expenseForm)
         {
             if (ModelState.IsValid)
             {
@@ -95,6 +95,16 @@ namespace ExpenseApplication.Controllers
                     
 
                 return RedirectToAction("Index", new { formSubmitted = true });
+            }
+            foreach (var modelError in ModelState)
+            {
+                var fieldName = modelError.Key;
+                var errors = modelError.Value.Errors;
+
+                foreach (var error in errors)
+                {
+                    Console.WriteLine($"Alan: {fieldName}, Hata: {error.ErrorMessage}");
+                }
             }
 
             return View(expenseForm);
@@ -424,7 +434,7 @@ namespace ExpenseApplication.Controllers
         {
             int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "0");
 
-            var query = _context.ExpenseForms.Include(e => e.Expenses).Where(e => e.StatusId == 1 && e.UserId == userId);
+            var query = _context.ExpenseForms.Where(e => e.StatusId == 1 && e.UserId == userId);
 
             if (startDate.HasValue)
             {
@@ -442,6 +452,19 @@ namespace ExpenseApplication.Controllers
             }
 
             return View(await query.ToListAsync());
+        }
+
+        public IActionResult ExpenseDetails(int id)
+        {
+            var expenseForm = _context.ExpenseForms.Include(e => e.Expenses).SingleOrDefault(e => e.ExpenseFormId == id);
+
+            if (expenseForm == null)
+            {
+                return NotFound();
+            }
+            var expenses = expenseForm.Expenses;
+
+            return View("ExpenseDetails", expenses);
         }
 
 
