@@ -32,7 +32,7 @@
             <th>User ID</th>
             <th>Para Birimi</th>
             <th>Toplam Tutar</th>
-            <th>Masraflar</th>
+            <th>Detay</th>
         </tr>
     </thead>
     <tbody>
@@ -44,32 +44,7 @@
                 <td>@form.Currency</td>
                 <td>@form.TotalAmount</td>
                 <td>
-                    <table class="table table-sm">
-                        <thead>
-                            <tr>
-                                <th>Masraf ID</th>
-                                <th>Tarih</th>
-                                <th>Amaç</th>
-                                <th>Tutar</th>
-                                <th>Aksiyonlar</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var expense in form.Expenses)
-                            {
-                                <tr>
-                                    <td>@expense.ExpenseId</td>
-                                    <td>@expense.ExpenseDate.ToShortDateString()</td>
-                                    <td>@expense.Description</td>
-                                    <td>@expense.Amount</td>
-                                    <td>
-                                        
-                                        <a asp-action="EditExpense" asp-controller="Home" asp-route-id="@expense.ExpenseId" class="btn btn-primary btn-sm">Düzenle</a>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
+                    <a asp-action="ExpenseDetails" asp-controller="Home" asp-route-id="@form.ExpenseFormId" class="btn btn-primary btn-sm">Detay</a>
                 </td>
             </tr>
         }

@@ -1,0 +1,36 @@
+﻿@model IEnumerable<ExpenseApplication.Models.Expense>
+
+@{
+    ViewData["Title"] = "Masraf Detayları";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Masraf ID</th>
+            <th>Tarih</th>
+            <th>Açıklama</th>
+            <th>Tutar</th>
+            <th>Reddetme Nedeni</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var expense in Model)
+        {
+            <tr>
+                <td>@expense.ExpenseId</td>
+                <td>@expense.ExpenseDate.ToShortDateString()</td>
+                <td>@expense.Description</td>
+                <td>@expense.Amount</td>
+                <td>@expense.ReasonRejection</td>
+                <td>
+                    <a asp-action="EditExpense" asp-controller="Home" asp-route-id="@expense.ExpenseId" class="btn btn-primary">Düzenle</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="PendingForms" asp-controller="Home" class="btn btn-secondary">Geri</a>
