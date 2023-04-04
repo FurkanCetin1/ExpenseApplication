@@ -1,7 +1,13 @@
-﻿@model IEnumerable<ExpenseApplication.Models.Expense>
+﻿@model Tuple<IEnumerable<ExpenseApplication.Models.Expense>, string>
 
 @{
     ViewData["Title"] = "Masraf Detayları";
+    Dictionary<string, string> currencySymbols = new Dictionary<string, string>
+    {
+        { "TL", "₺" },
+        { "USD", "$" },
+        {"EUR", "€"}
+    };
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -13,18 +19,16 @@
             <th>Tarih</th>
             <th>Açıklama</th>
             <th>Tutar</th>
-            <th>Reddetme Nedeni</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var expense in Model)
+        @foreach (var expense in Model.Item1)
         {
             <tr>
                 <td>@expense.ExpenseId</td>
-                <td>@expense.ExpenseDate.ToShortDateString()</td>
+                <td>@expense.ExpenseDate.ToString("dd-MM-yyyy")</td>
                 <td>@expense.Description</td>
-                <td>@expense.Amount</td>
-                <td>@expense.ReasonRejection</td>
+                <td>@expense.Amount @currencySymbols[Model.Item2]</td>
                 <td>
                     <a asp-action="EditExpense" asp-controller="Home" asp-route-id="@expense.ExpenseId" class="btn btn-primary">Düzenle</a>
                 </td>

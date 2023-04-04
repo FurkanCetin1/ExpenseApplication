@@ -35,7 +35,6 @@ namespace ExpenseApplication.Migrations
                         .HasColumnType("decimal(10, 2)");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
@@ -76,7 +75,6 @@ namespace ExpenseApplication.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ReviewComment")
@@ -124,6 +122,9 @@ namespace ExpenseApplication.Migrations
                         .HasColumnType("int")
                         .HasColumnName("ExpenseFormID");
 
+                    b.Property<int?>("ExpenseId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("StatusId")
                         .HasColumnType("int")
                         .HasColumnName("StatusID");
@@ -136,6 +137,8 @@ namespace ExpenseApplication.Migrations
                         .HasName("PK__ExpenseH__3214EC27256B1F09");
 
                     b.HasIndex("ExpenseFormId");
+
+                    b.HasIndex("ExpenseId");
 
                     b.HasIndex("StatusId");
 
@@ -260,6 +263,10 @@ namespace ExpenseApplication.Migrations
                         .HasForeignKey("ExpenseFormId")
                         .HasConstraintName("FK__ExpenseHi__Expen__5FB337D6");
 
+                    b.HasOne("ExpenseApplication.Models.Expense", "Expense")
+                        .WithMany()
+                        .HasForeignKey("ExpenseId");
+
                     b.HasOne("ExpenseApplication.Models.Status", "Status")
                         .WithMany()
                         .HasForeignKey("StatusId");
@@ -268,6 +275,8 @@ namespace ExpenseApplication.Migrations
                         .WithMany("ExpenseHistories")
                         .HasForeignKey("UserId")
                         .HasConstraintName("FK__ExpenseHi__UserI__619B8048");
+
+                    b.Navigation("Expense");
 
                     b.Navigation("ExpenseForm");
 

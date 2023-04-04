@@ -1,7 +1,7 @@
 ﻿@model ExpenseForm
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Düzenle";
 }
 
 <h1>Edit</h1>
@@ -37,14 +37,14 @@
                 <input type="number" step="0.01" class="form-control" name="Expenses[@i].Amount" value="@Model.Expenses.ElementAt(i).Amount" required />
             </div>
 
-            <button type="button" class="btn btn-danger" onclick="removeExpenseItem(this);">Sil</button>
+            <button type="button" class="btn btn-danger" onclick="removeExpenseItem(this);" style="margin-top:8px">Sil</button>
             <hr />
         </div>
     }
 
 
 
-    <button type="button" class="btn btn-secondary mb-3" onclick="addExpenseItem();">Masraf Ekle</button>
+    <button type="button" class="btn btn-secondary" onclick="addExpenseItem();">Masraf Ekle</button>
     <button type="submit" class="btn btn-primary">Kaydet</button>
 </form>
 
@@ -74,7 +74,7 @@
                     <input type="number" step="0.01" class="form-control" name="Expenses[0].Amount" required />
                 </div>
 
-                <button type="button" class="btn btn-danger" onclick="removeExpenseItem(this);">Sil</button>
+                        <button type="button" class="btn btn-danger" onclick="removeExpenseItem(this);" style="margin-top:8px">Sil</button>
                 <hr />
             `;
 

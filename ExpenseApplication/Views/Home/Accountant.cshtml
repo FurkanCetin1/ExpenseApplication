@@ -32,9 +32,9 @@
     <thead>
         <tr>
             <th>Form ID</th>
-            <th>User</th>
-            <th>Date</th>
-            <th>Status</th>
+            <th>Çalışan</th>
+            <th>Masraf Açıklaması</th>
+            <th>Tarih</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -44,8 +44,8 @@
             <tr>
                 <td>@form.ExpenseFormId</td>
                 <td>@(form.User != null ? form.User.Username : "N/A")</td>
-                <td>@form.CreatedDate.Value.ToString("yyyy-MM-dd")</td>
-                <td>@form.StatusId</td>
+                <td>@form.Description</td>
+                <td>@form.CreatedDate.Value.ToString("dd-MM-yyyy")</td>
                 <td>
                     <button class="btn btn-success pay-button" data-formid="@form.ExpenseFormId">Öde</button>
                 </td>
@@ -55,7 +55,7 @@
                 <tr>
                     <td></td>
                     <td colspan="4">
-                        @expense.ExpenseDate.ToString("yyyy-MM-dd") - @expense.Description - @expense.Amount
+                        @expense.ExpenseDate.ToString("dd-MM-yyyy") - @expense.Description - @expense.Amount
                     </td>
                 </tr>
             }
@@ -69,6 +69,29 @@
 
 @section Scripts {
     <script>
+        function applyFilter() {
+            var startDate = $('#startDate').val();
+            var endDate = $('#endDate').val();
+            var username = $('#username').val();
+
+            $.ajax({
+                method: 'GET',
+                url: '/Home/Accountant',
+                data: { startDate: startDate, endDate: endDate, username: username },
+                success: function (result) {
+                    $('table tbody').html($(result).find('table tbody').html());
+                },
+                error: function () {
+                    alert('Filtreleme işlemi başarısız oldu.');
+                }
+            });
+        }
+
+        $('form').on('submit', function (e) {
+            e.preventDefault();
+            applyFilter();
+        });
+
         $(function () {
             $('.pay-button').click(function () {
                 var formId = $(this).data('formid');
@@ -79,9 +102,8 @@
                     url: '/Home/PayExpenseForm',
                     data: { id: formId },
                     success: function () {
-                        button.prop('disabled', true);
-                        button.text('Ödendi');
                         $('#paymentMessage').fadeIn().delay(3000).fadeOut();
+                        applyFilter();
                     },
                     error: function () {
                         alert('Ödeme işlemi başarısız oldu.');
@@ -91,3 +113,4 @@
         });
     </script>
 }
+

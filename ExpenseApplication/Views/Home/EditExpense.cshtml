@@ -1,7 +1,7 @@
 ﻿@model ExpenseApplication.Models.Expense
 
 @{
-    ViewData["Title"] = "Edit Expense";
+    ViewData["Title"] = "Masraf Düzenle";
 }
 
 <h1>Edit Expense</h1>
@@ -25,5 +25,7 @@
         <input asp-for="Amount" class="form-control" />
     </div>
 
-    <button type="submit" class="btn btn-primary">Kaydet</button>
+    <button type="submit" class="btn btn-primary" style="margin-top:20px">Kaydet</button>
 </form>
+
+<a asp-action="ExpenseDetails" asp-controller="Home" class="btn btn-secondary">Geri</a>

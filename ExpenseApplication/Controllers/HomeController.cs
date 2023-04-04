@@ -96,16 +96,6 @@ namespace ExpenseApplication.Controllers
 
                 return RedirectToAction("Index", new { formSubmitted = true });
             }
-            foreach (var modelError in ModelState)
-            {
-                var fieldName = modelError.Key;
-                var errors = modelError.Value.Errors;
-
-                foreach (var error in errors)
-                {
-                    Console.WriteLine($"Alan: {fieldName}, Hata: {error.ErrorMessage}");
-                }
-            }
 
             return View(expenseForm);
         }
@@ -463,9 +453,12 @@ namespace ExpenseApplication.Controllers
                 return NotFound();
             }
             var expenses = expenseForm.Expenses;
+            string currency = expenseForm.Currency;
 
-            return View("ExpenseDetails", expenses);
+            var model = new Tuple<IEnumerable<Expense>, string>(expenses, currency);
+            return View("ExpenseDetails", model);
         }
+
 
 
         public async Task<IActionResult> EditExpense(int? id)

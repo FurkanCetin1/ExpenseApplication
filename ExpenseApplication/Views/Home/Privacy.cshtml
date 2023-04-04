@@ -3,6 +3,13 @@
 
 @{
     ViewData["Title"] = "Onay Bekleyen Masraflar";
+    Dictionary<string, string> currencySymbols = new Dictionary<string, string>
+    {
+        { "TL", "₺" },
+        { "USD", "$" },
+        {"EUR", "€"}
+        // diğer para birimleri için de buraya ekleyebilirsiniz
+    };
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -33,9 +40,9 @@
     <thead>
         <tr>
             <th>Form ID</th>
-            <th>User</th>
-            <th>Date</th>
-            <th>Status</th>
+            <th>Kullanıcı</th>
+            <th>Masraf Açıklaması</th>
+            <th>Tarih</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -45,30 +52,34 @@
             <tr>
                 <td>@form.ExpenseFormId</td>
                 <td>@form.User.Username</td>
-                <td>@form.CreatedDate.Value.ToString("yyyy-MM-dd")</td>
-                <td>@form.StatusId</td>
+                <td>@form.Description</td>
+                <td>@form.CreatedDate.Value.ToString("dd-MM-yyyy")</td>
                 <td>
-                    <form method="post" asp-action="ApproveExpenseForm" asp-controller="Home">
-                        <input type="hidden" name="expenseFormId" value="@form.ExpenseFormId" />
-                        <button type="submit" class="btn btn-primary">Onayla</button>
-                    </form>
-                    <form method="post" asp-action="RejectExpenseForm" asp-controller="Home">
-                        <input type="hidden" name="expenseFormId" value="@form.ExpenseFormId" />
-                        <button type="submit" class="btn btn-danger">Reddet</button>
-                    </form>
-                    <form method="post" asp-action="RequestEdit" asp-controller="Home" onsubmit="showSuccessMessage()">
-                        <input type="hidden" name="expenseFormId" value="@form.ExpenseFormId" />
-                        <textarea name="reviewComment" placeholder="Yorumunuzu buraya yazın"></textarea>
-                        <button type="submit" class="btn btn-warning" disabled>Düzenleme Talebi Gönder</button>
-                    </form>
+                    <div class="d-flex align-items-center">
+                        <form method="post" asp-action="ApproveExpenseForm" asp-controller="Home" class="mb-2">
+                            <input type="hidden" name="expenseFormId" value="@form.ExpenseFormId" />
+                            <button type="submit" class="btn btn-primary" style="margin-right: 10px;">Onayla</button>
+                        </form>
+                        <form method="post" asp-action="RejectExpenseForm" asp-controller="Home" class="mb-2">
+                            <input type="hidden" name="expenseFormId" value="@form.ExpenseFormId" />
+                            <button type="submit" class="btn btn-danger" style="margin-right: 10px;">Reddet</button>
+                        </form>
+                        <form method="post" asp-action="RequestEdit" asp-controller="Home" onsubmit="showSuccessMessage()" class="d-flex align-items-center">
+                            <input type="hidden" name="expenseFormId" value="@form.ExpenseFormId" />
+                            <textarea name="reviewComment" placeholder="Yorumunuzu buraya yazın" class="form-control" style="margin-left: 10px;"></textarea>
+                            <button type="submit" class="btn btn-warning" disabled style="margin-left: 10px;">Düzenleme Talebi Gönder</button>
+                        </form>
+                    </div>
                 </td>
+
+
             </tr>
             foreach (var expense in form.Expenses)
             {
                 <tr>
                     <td></td>
                     <td colspan="4">
-                        @expense.ExpenseDate.ToString("yyyy-MM-dd") - @expense.Description - @expense.Amount
+                        @expense.ExpenseDate.ToString("dd-MM-yyyy") - @expense.Description - @expense.Amount @currencySymbols[form.Currency]
                     </td>
                 </tr>
             }

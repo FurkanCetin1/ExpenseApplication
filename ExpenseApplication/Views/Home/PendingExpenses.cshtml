@@ -2,6 +2,12 @@
 
 @{
     ViewData["Title"] = "Düzenlenmeyi Bekleyen Masraflar";
+    Dictionary<string, string> currencySymbols = new Dictionary<string, string>
+    {
+        { "TL", "₺" },
+        { "USD", "$" },
+        {"EUR", "€"}
+    };
 }
 
 <h1>Düzenlenmeyi Bekleyen Masraflar</h1>
@@ -10,6 +16,7 @@
     <thead>
         <tr>
             <th>Id</th>
+            <th>Masraf Açıklaması</th>
             <th>Yönetici Yorumu</th>
             <th>Toplam Masraf</th>
             <th>Düzenle</th>
@@ -20,8 +27,9 @@
         {
             <tr>
                 <td>@expenseForm.ExpenseFormId</td>
+                <td>@expenseForm.Description</td>
                 <td>@expenseForm.ReviewComment</td>
-                <td>@expenseForm.TotalAmount</td>
+                <td>@expenseForm.TotalAmount @currencySymbols[expenseForm.Currency]</td>
                 <td>
                     <a asp-action="Edit" asp-controller="Home" asp-route-id="@expenseForm.ExpenseFormId" class="btn btn-primary">Düzenle</a>
                 </td>

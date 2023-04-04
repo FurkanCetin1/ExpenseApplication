@@ -1,7 +1,13 @@
 ﻿@model IEnumerable<ExpenseApplication.Models.ExpenseForm>
 
 @{
-    ViewData["Title"] = "Onay Bekleyen Masraflar";
+    ViewData["Title"] = "Masraflarım";
+    Dictionary<string, string> currencySymbols = new Dictionary<string, string>
+    {
+        { "TL", "₺" },
+        { "USD", "$" },
+        {"EUR", "€"}
+    };
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -29,8 +35,7 @@
     <thead>
         <tr>
             <th>Form ID</th>
-            <th>User ID</th>
-            <th>Para Birimi</th>
+            <th>Masraf Açıklaması</th>
             <th>Toplam Tutar</th>
             <th>Detay</th>
         </tr>
@@ -40,9 +45,8 @@
         {
             <tr>
                 <td>@form.ExpenseFormId</td>
-                <td>@form.UserId</td>
-                <td>@form.Currency</td>
-                <td>@form.TotalAmount</td>
+                <td>@form.Description</td>
+                <td>@form.TotalAmount @currencySymbols[form.Currency]</td>
                 <td>
                     <a asp-action="ExpenseDetails" asp-controller="Home" asp-route-id="@form.ExpenseFormId" class="btn btn-primary btn-sm">Detay</a>
                 </td>
